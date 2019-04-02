@@ -23,7 +23,25 @@ const db = knex(knexConfig)
 
 server.get('/api/zoo', (req, res) => {
   db('zoos')
-  .then(animal => res.status(200).json(animal))
+  .then(animals => res.status(200).json(animals))
+  .catch(error => res.status(500).json(error))
+})
+
+server.get('/api/zoo/:id', (req, res) => {
+  const id = req.params.id
+
+  db('zoos')
+  .where({id})
+  .first()
+  .then(animal => {
+    if(!animal) {
+      res
+      .status(404)
+      .json({message: `Animal with the specified ID of ${id} does not exist.`})
+    } else {
+      res.json(animal)
+    }
+  })
   .catch(error => res.status(500).json(error))
 })
 
