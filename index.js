@@ -45,6 +45,31 @@ server.get('/api/zoo/:id', (req, res) => {
   .catch(error => res.status(500).json(error))
 })
 
+server.post('/api/zoo', (req, res) => {
+  const zoo = req.body
+  if(!zoo.name) {
+        res
+            .status(403)
+            .json({message: "You need to fill out necessary field(s) ('name')."})
+      } else {
+  db('zoos')
+  .insert(zoo)
+  .then(ids => {
+    const id = ids[0]
+    db('zoos')
+    .where({id})
+    .first()
+    .then(zoos => res.status(201).json(zoos))
+    
+  })
+  .catch(error => {
+    res
+    .status(500)
+    .json({message: "There was an error while saving to the database"})
+  })
+}
+})
+
 
 
 
