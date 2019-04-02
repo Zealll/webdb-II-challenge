@@ -70,6 +70,31 @@ server.post('/api/zoo', (req, res) => {
 }
 })
 
+server.put('/api/zoo/:id', (req, res) => {
+  const id = req.params.id
+  const body = req.body
+
+  db('zoos')
+  .where({id})
+  .update(body)
+  .then(zooCount => {
+    if(!zooCount) {
+      res
+      .status(404)
+     .json({message: `Animal with the specified ID of ${id} does not exist.`})
+    } else {
+      res
+      .status(200)
+      .json({message: `Success! You updated ${zooCount} item(s)`})
+    }
+  })
+  .catch(error => {
+    res
+    .status(500)
+    .json(error)
+})
+})
+
 
 
 
