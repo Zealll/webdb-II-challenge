@@ -205,6 +205,24 @@ server.put('/api/bears/:id', (req, res) => {
   }
 })
 
+server.delete('/api/bears/:id', (req, res) => {
+  const id = req.params.id
+
+  db('bears')
+  .where({id})
+  .del()
+  .then(count => {
+    if(!count) {
+      res
+      .status(404)
+      .json({message: `Specified ID of ${id} does not exist.`})
+    } else {
+      res.json({message: 'User Has Been Deleted.'}).end()
+    }
+  })
+  .catch(error => res.status(500).json(error))
+})
+
 
 
 
