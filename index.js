@@ -21,6 +21,9 @@ const db = knex(knexConfig)
 
 // endpoints here
 
+
+// Endpoints for ZOOS table
+
 server.get('/api/zoo', (req, res) => {
   db('zoos')
   .then(animals => res.status(200).json(animals))
@@ -115,6 +118,16 @@ server.delete('/api/zoo/:id', (req, res) => {
     .status(500)
     .json(error)
 })
+})
+
+
+
+// Endpoints for BEARS Table
+
+server.get('/api/bears', (req, res) => {
+  db('bears')
+  .then(bears => res.status(200).json(bears))
+  .catch(error => res.status(500).json(error))
 })
 
 
