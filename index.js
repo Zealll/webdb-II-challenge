@@ -77,25 +77,31 @@ server.put('/api/zoo/:id', (req, res) => {
   const id = req.params.id
   const body = req.body
 
-  db('zoos')
-  .where({id})
-  .update(body)
-  .then(zooCount => {
-    if(!zooCount) {
-      res
-      .status(404)
-     .json({message: `Animal with the specified ID of ${id} does not exist.`})
-    } else {
-      res
-      .status(200)
-      .json({message: `Success! You updated ${zooCount} item(s)`})
-    }
-  })
-  .catch(error => {
+  if(!body.name) {
     res
-    .status(500)
-    .json(error)
-})
+    .status(403)
+    .json({message: "You need to fill out necessary field(s) ('name')."})
+  } else {
+    db('zoos')
+    .where({id})
+    .update(body)
+    .then(zooCount => {
+      if(!zooCount) {
+        res
+        .status(404)
+        .json({message: `Animal with the specified ID of ${id} does not exist.`})
+      } else {
+        res
+        .status(200)
+        .json({message: `Success! You updated ${zooCount} item(s)`})
+      }
+    })
+    .catch(error => {
+      res
+      .status(500)
+      .json(error)
+    })
+  }
 })
 
 server.delete('/api/zoo/:id', (req, res) => {
@@ -146,6 +152,57 @@ server.get('/api/bears/:id', (req, res) => {
     }
   })
   .catch(error => res.status(500).json(error))
+})
+
+server.post('/api/bears', (req, res) => {
+  const body = req.body
+
+  if(!body.name) {
+    res
+    .status(403)
+    .json({message: "You need to fill out necessary field(s) ('name')."})
+  } else {
+    db('bears')
+    .insert(body)
+    .then(ids => {
+      const id = ids[0]
+
+      db('bears')
+      .where({id})
+      .first()
+      .then(bear => res.status(201).json(bear))
+    })
+    .catch(error => res.status(500).json(error))
+  }
+})
+
+server.put('/api/bears/:id', (req, res) => {
+  const id = req.params.id
+  const body = req.body
+
+  if(!body.name) {
+    res
+    .status(403)
+    .json({message: "You need to fill out necessary field(s) ('name')."})
+  } else {
+    db('bears')
+    .where({id})
+    .update(body)
+    .then(count => {
+      if(!count) {
+        res
+        .status(404)
+        .json({message: `Bear with the specified ID of ${id} does not exist.`})
+      } else {
+        res
+        .status(200)
+        .json({message: `Success! You updated ${count} item(s)`})
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error) 
+    })
+  }
 })
 
 
