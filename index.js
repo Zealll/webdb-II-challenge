@@ -130,6 +130,24 @@ server.get('/api/bears', (req, res) => {
   .catch(error => res.status(500).json(error))
 })
 
+server.get('/api/bears/:id', (req, res) => {
+  const id = req.params.id
+
+  db('bears')
+  .where({id})
+  .first()
+  .then(bear => {
+    if(!bear) {
+      res
+      .status(404)
+      .json({message: `Bear with the specified ID of ${id} does not exist.`})
+    } else {
+      res.json(bear)
+    }
+  })
+  .catch(error => res.status(500).json(error))
+})
+
 
 
 
